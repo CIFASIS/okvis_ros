@@ -176,3 +176,25 @@ To perform a calibration yourself, we recommend the following:
 The developpers will be happy to assist you or to consider bug reports / feature 
 requests. But questions that can be answered reading this document will be 
 ignored. Please contact s.leutenegger@imperial.ac.uk.
+
+### Docker and testing on the Rosario Dataset ###
+
+Being in the okvis_ros directory, to build the image execute this:
+
+```bash
+docker build --rm --tag ros:okvis-ros .
+```
+
+To run on the Rosario dataset:
+
+```bash
+docker run --rm -it --net=host -v "`pwd`/config:/root/catkin_ws/src/okvis_ros/config:ro" -v "`pwd`/launch:/root/catkin_ws/src/okvis_ros/launch:ro" ros:okvis-ros roslaunch okvis_ros okvis_node_rosario.launch
+```
+
+Then launch visualization (`rviz -d rviz/okvis.rviz &`) and play some sequence (`rosbag play --pause --clock path/to/sequence04.bag`).
+
+To visualize the output after, it is neccesary to record the odometry topic (using [`pose_listener`](https://github.com/jcremona/pose_listener) it would be `rosrun pose_listener pose_listener _topic:=/okvis_node/okvis_odometry _type:=O`). Then it can be plotted with [evo](https://github.com/MichaelGrupp/evo):
+
+```bash
+evo_traj tum trajectory.txt --plot
+```
