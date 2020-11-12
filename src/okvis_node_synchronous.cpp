@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
 
   okvis::ThreadedKFVio okvis_estimator(parameters);
 
-  okvis_estimator.setFullStateCallback(std::bind(&okvis::Publisher::publishFullStateAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4));
+  okvis_estimator.setFullStateCallback(std::bind(&okvis::Publisher::publishFullStateAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5));
   okvis_estimator.setLandmarksCallback(std::bind(&okvis::Publisher::publishLandmarksAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3));
   okvis_estimator.setStateCallback(std::bind(&okvis::Publisher::publishStateAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2));
   okvis_estimator.setBlocking(true);
@@ -127,11 +127,14 @@ int main(int argc, char **argv) {
     num << i;
     okvis_estimator.setTracksCsvFile(i, path + "/cam" + num.str() + "_tracks.csv");
   }
+    //okvis_estimator.setTracksCsvFile(0, path + "/stereo/left/image_raw");
+    //okvis_estimator.setTracksCsvFile(1, path + "/stereo/right/image_raw");
 
   // open the bag
   rosbag::Bag bag(argv[2], rosbag::bagmode::Read);
   // views on topics. the slash is needs to be correct, it's ridiculous...
-  std::string imu_topic("/imu0");
+
+  std::string imu_topic("/imu");
   rosbag::View view_imu(
       bag,
       rosbag::TopicQuery(imu_topic));
@@ -147,7 +150,9 @@ int main(int argc, char **argv) {
   std::vector<okvis::Time> times;
   okvis::Time latest(0);
   for(size_t i=0; i<numCameras;++i) {
-    std::string camera_topic("/cam"+std::to_string(i)+"/image_raw");
+    std::string camera_topic;
+    if (i == 0) camera_topic = "/stereo/left/image_raw";
+    else camera_topic = "/stereo/right/image_raw";
     std::shared_ptr<rosbag::View> view_ptr(
         new rosbag::View(
             bag,

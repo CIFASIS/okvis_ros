@@ -501,7 +501,8 @@ void Publisher::publishStateAsCallback(
 void Publisher::publishFullStateAsCallback(
     const okvis::Time & t, const okvis::kinematics::Transformation & T_WS,
     const Eigen::Matrix<double, 9, 1> & speedAndBiases,
-    const Eigen::Matrix<double, 3, 1> & omega_S)
+    const Eigen::Matrix<double, 3, 1> & omega_S,
+    const std::vector<cv::Mat> & images)
 {
   setTime(t);
   setOdometry(T_WS, speedAndBiases, omega_S);  // TODO: provide setters for this hack
@@ -509,6 +510,10 @@ void Publisher::publishFullStateAsCallback(
   publishOdometry();
   publishTransform();
   publishPath();
+  if (!images.empty()) {
+    setImages(images);
+    publishImages();
+  }
 }
 
 // Set and write full state to CSV file.
@@ -691,7 +696,7 @@ void Publisher::publishImages()
     cameraNameStream << "camera_" << i;
     msg.header.stamp = ros::Time::now();
     msg.header.frame_id = cameraNameStream.str();
-    sensor_msgs::fillImage(msg, sensor_msgs::image_encodings::MONO8,
+    sensor_msgs::fillImage(msg, sensor_msgs::image_encodings::BGR8,
                            images_[i].rows, images_[i].cols,
                            images_[i].step.buf[0], images_[i].data);
     pubImagesVector_[i].publish(msg);

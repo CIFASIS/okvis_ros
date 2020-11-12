@@ -190,7 +190,8 @@ class Publisher
   void publishFullStateAsCallback(
       const okvis::Time & t, const okvis::kinematics::Transformation & T_WS,
       const Eigen::Matrix<double, 9, 1> & speedAndBiases,
-      const Eigen::Matrix<double, 3, 1> & omega_S);
+      const Eigen::Matrix<double, 3, 1> & omega_S,
+      const std::vector<cv::Mat> & images);
 
   /**
    * @brief Set and publish landmarks.
