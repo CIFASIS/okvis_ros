@@ -1,0 +1,9 @@
+Dockerfile
+.dockerignore
+README.md
+.git/*
+config/*
+launch/*
+build/*
+outputs/*
+run*
