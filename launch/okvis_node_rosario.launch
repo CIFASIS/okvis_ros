@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch> 
+    <param name="/use_sim_time" value="true"/>
+
+    <!-- Call stereo_image_proc to transform to mono -->
+    <group ns="stereo">
+      <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc"/>
+    </group>
+
+    <node name="okvis_node" pkg="okvis_ros" type="okvis_node" output="screen">
+      <param name="config_filename" value="$(env HOME)/catkin_ws/src/okvis_ros/config/rosario.yaml" />
+      <param name="mesh_file" value="firefly.dae" />
+      <remap from="/camera0" to="/stereo/left/image_mono" />
+      <remap from="/camera1" to="/stereo/right/image_mono" />
+      <!-- Taken from configuration file
+      <remap from="/calibration0" to="/cam0/calibration" />
+      <remap from="/calibration1" to="/cam1/calibration" /> -->
+      <remap from="/imu" to="/imu" />
+    </node>
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="start_broadcaster" args="0 0 0 0 0 0 start world"/>
+</launch>
