@@ -182,13 +182,13 @@ ignored. Please contact s.leutenegger@imperial.ac.uk.
 Being in the okvis_ros directory, to build the image execute this:
 
 ```bash
-docker build --rm --tag ros:okvis-ros .
+docker build --rm --tag okvis:ros_kinetic .
 ```
 
 To run on the Rosario dataset:
 
 ```bash
-docker run --rm -it --net=host -v "`pwd`/config:/root/catkin_ws/src/okvis_ros/config:ro" -v "`pwd`/launch:/root/catkin_ws/src/okvis_ros/launch:ro" ros:okvis-ros roslaunch okvis_ros okvis_node_rosario.launch
+docker run --rm -it --net=host -v "`pwd`/config:/root/catkin_ws/src/okvis_ros/config:ro" -v "`pwd`/launch:/root/catkin_ws/src/okvis_ros/launch:ro" okvis:ros_kinetic roslaunch okvis_ros okvis_node_rosario.launch
 ```
 
 Then launch visualization (`rviz -d rviz/okvis.rviz &`) and play some sequence (`rosbag play --pause --clock path/to/sequence04.bag`).
