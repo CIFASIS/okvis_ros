@@ -1,0 +1,96 @@
+%YAML:1.0
+cameras:
+     - {T_SC:
+        [0.009471441780975032, -0.9939081748565041, 0.10980360533243941, -0.030950056130583600,
+        0.9984567420628084, 0.0033909183804303744, -0.055431362078334365, -0.077136433704428381,
+        0.05472134884952806, 0.11015916496574298, 0.9924064350628417, 0.026512487799308242,
+        0.0, 0.0, 0.0, 1.0],
+        image_dimension: [672, 376],
+        distortion_coefficients: [-0.174497, 0.027127, -0.000359, 0.000457],
+        distortion_type: radialtangential,
+        focal_length: [348.522264, 348.449870],
+        principal_point: [344.483596, 188.808062]}
+
+     - {T_SC:
+        [0.010486169744957197, -0.9940873423040585, 0.10807588128224391, -0.029702271983652186,
+        0.9972728488827708, 0.002500626397312078, -0.07376050263429253, 0.041641180069859347,
+        0.07305412462908822, 0.10855460717295605, 0.9914025378907414, 0.033393889310081332,
+        0.0, 0.0, 0.0, 1.0],
+        image_dimension: [672, 376],
+        distortion_coefficients: [-0.174606, 0.027855, -0.000108, -0.000141],
+        distortion_type: radialtangential,
+        focal_length: [349.569635, 349.390781],
+        principal_point: [340.836585, 206.105440]}
+
+
+camera_params:
+    camera_rate: 15 # just to manage the expectations of when there should be frames arriving
+    sigma_absolute_translation: 1.0e-10 # The standard deviation of the camera extrinsics translation, e.g. 1.0e-10 for online-calib [m].
+    sigma_absolute_orientation: 1.0e-3 # The standard deviation of the camera extrinsics orientation, e.g. 1.0e-3 for online-calib [rad].
+    sigma_c_relative_translation: 1.0e-6 # The std. dev. of the cam. extr. transl. change between frames, e.g. 1.0e-6 for adaptive online calib (not less for numerics) [m].
+    sigma_c_relative_orientation: 1.0e-6 # The std. dev. of the cam. extr. orient. change between frames, e.g. 1.0e-6 for adaptive online calib (not less for numerics) [rad].
+    timestamp_tolerance: 0.005 # [s] stereo frame out-of-sync tolerance
+
+imu_params:
+    a_max: 176.0 # acceleration saturation [m/s^2]
+    g_max: 7.8 # gyro saturation [rad/s]
+    sigma_g_c: 0.028579943407611055 # gyro noise density [rad/s/sqrt(Hz)]
+    sigma_a_c: 0.06367367080238862 # accelerometer noise density [m/s^2/sqrt(Hz)]
+    sigma_bg: 0.03 # gyro bias prior [rad/s]
+    sigma_ba: 0.1 # accelerometer bias prior [m/s^2]
+    sigma_gw_c: 0.007544790215216806 # gyro drift noise density [rad/s^s/sqrt(Hz)]
+    sigma_aw_c: 0.02643259445927608 # accelerometer drift noise density [m/s^2/sqrt(Hz)]
+    tau: 3600.0 # reversion time constant, currently not in use [s]
+    g: 9.81007 # Earth's acceleration due to gravity [m/s^2]
+    a0: [ 0.0, 0.0, 0.0 ] # Accelerometer bias [m/s^2]
+    imu_rate: 140
+    # tranform Body-Sensor (IMU)
+    T_BS:
+        [1.0000, 0.0000, 0.0000, 0.0000,
+         0.0000, 1.0000, 0.0000, 0.0000,
+         0.0000, 0.0000, 1.0000, 0.0000,
+         0.0000, 0.0000, 0.0000, 1.0000]
+
+# Estimator parameters
+numKeyframes: 5 # number of keyframes in optimisation window
+numImuFrames: 3 # number of frames linked by most recent nonlinear IMU error terms
+
+# ceres optimization options
+ceres_options:
+    minIterations: 3   # minimum number of iterations always performed
+    maxIterations: 10  # never do more than these, even if not converged
+    timeLimit: 0.035   # [s] negative values will set the an unlimited time limit
+
+# detection
+detection_options:
+    threshold: 40.0      # detection threshold. By default the uniformity radius in pixels
+    octaves: 0           # number of octaves for detection. 0 means single-scale at highest resolution
+    maxNoKeypoints: 200  # restrict to a maximum of this many keypoints per image (strongest ones)
+
+# delay of images [s]:
+imageDelay: 0.0  # in case you are using a custom setup, you will have to calibrate this. 0 for the VISensor.
+
+# display debug images?
+displayImages: true  # displays debug video and keyframe matches. May be slow.
+
+# use direct driver
+useDriver: true 
+
+# some options for how and what to publish -- optional in ROS-free version
+publishing_options:
+    publish_rate: 200                  # rate at which odometry updates are published only works properly if imu_rate/publish_rate is an integer!!
+    publishLandmarks: treu             # select, if you want to publish landmarks at all
+    landmarkQualityThreshold: 1.0e-2   # landmark with lower quality will not be published
+    maximumLandmarkQuality: 0.05       # landmark with higher quality will be published with the maximum colour intensity
+    maxPathLength: 20                  # maximum length of the published path
+    publishImuPropagatedState: true    # Should the state that is propagated with IMU messages be published? Or just the optimized ones?
+    # provide custom World frame Wc
+    T_Wc_W:
+        [1.0000, 0.0000, 0.0000, 0.0000,
+         0.0000, 1.0000, 0.0000, 0.0000,
+         0.0000, 0.0000, 1.0000, 0.0000,
+         0.0000, 0.0000, 0.0000, 1.0000]
+    trackedBodyFrame: B                # B or S, the frame of reference that will be expressed relative to the selected worldFrame
+    velocitiesFrame: Wc                # Wc, B or S,  the frames in which the velocities of the selected trackedBodyFrame will be expressed in
+
+
