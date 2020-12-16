@@ -64,6 +64,7 @@
 #include <okvis/Parameters.hpp>
 #include <okvis/FrameTypedefs.hpp>
 #include <okvis/Time.hpp>
+#include "timestamps_logger.h"
 
 /// \brief okvis Main namespace of this package.
 namespace okvis {
@@ -305,6 +306,8 @@ class Publisher
 
   std::shared_ptr<std::fstream> csvFile_; ///< CSV file to save state in.
   std::shared_ptr<std::fstream> csvLandmarksFile_;  ///< CSV file to save landmarks in.
+
+  TimestampsLogger output;
 
 };
 

@@ -55,7 +55,8 @@ namespace okvis {
 // Default constructor.
 Publisher::Publisher()
     : nh_(nullptr),
-      ctr2_(0)
+      ctr2_(0),
+      output("output.csv")
 {
 }
 
@@ -496,6 +497,7 @@ void Publisher::publishStateAsCallback(
   setTime(t);
   setPose(T_WS);  // TODO: provide setters for this hack
   publishPose();
+  output.Log(); // Assuming publishImuPropagatedState set to false
 }
 // Set and publish full state.
 void Publisher::publishFullStateAsCallback(

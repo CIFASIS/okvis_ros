@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(okvis_ros)
 
+option(LOG_TRACKING_TIMESTAMPS         "Enable option to save tracking times" OFF)
+if( LOG_TRACKING_TIMESTAMPS )
+   add_definitions(-DLOG_TRACKING_TIMESTAMPS)
+endif()
+
 find_package(catkin REQUIRED  
   pcl_conversions
   pcl_ros

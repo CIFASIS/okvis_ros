@@ -72,6 +72,7 @@
 #include <okvis/Publisher.hpp>
 #include <okvis/VioParametersReader.hpp>
 #include <okvis/kinematics/Transformation.hpp>
+#include "timestamps_logger.h"
 
 /// \brief okvis Main namespace of this package.
 namespace okvis {
@@ -160,6 +161,8 @@ class Subscriber
 
   okvis::VioInterface* vioInterface_;   ///< The VioInterface. (E.g. ThreadedKFVio)
   okvis::VioParameters vioParameters_;  ///< The parameters and settings.
+  TimestampsLogger input;
+  size_t frame_parity;
 };
 }
 

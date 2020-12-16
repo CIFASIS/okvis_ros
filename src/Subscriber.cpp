@@ -55,7 +55,7 @@ Subscriber::~Subscriber()
 
 Subscriber::Subscriber(ros::NodeHandle& nh, okvis::VioInterface* vioInterfacePtr,
                        const okvis::VioParametersReader& param_reader)
-    : vioInterface_(vioInterfacePtr)
+    : vioInterface_(vioInterfacePtr), input("input.csv"), frame_parity(0)
 {
   param_reader.getParameters(vioParameters_);
   imgTransport_ = 0;
@@ -106,6 +106,9 @@ void Subscriber::imageCallback(const sensor_msgs::ImageConstPtr& msg,/*
  const sensor_msgs::CameraInfoConstPtr& info,*/
                                unsigned int cameraIndex)
 {
+  if (!(frame_parity = ++frame_parity % 2)) { // Assuming synchronized stereo frames
+    input.Log();
+  }
   const cv::Mat raw(msg->height, msg->width, CV_8UC1,
                     const_cast<uint8_t*>(&msg->data[0]), msg->step);
 
